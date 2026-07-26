@@ -1,0 +1,66 @@
+// Prisma schema for the stone-mason directory, mirroring the original
+// MySQL schema (stonemasons.sql: companies, coverage_postcodes, website_clicks).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Company {
+  id             Int      @id @default(autoincrement())
+  companyName    String   @map("company_name")
+  contactName    String?  @map("contact_name")
+  phone          String
+  email          String?
+  website        String?
+  addressLine1   String?  @map("address_line1")
+  addressLine2   String?  @map("address_line2")
+  city           String?
+  county         String?
+  postcode       String?
+  description    String?
+  featured       Boolean  @default(false)
+  active         Boolean  @default(true)
+  dateAdded      DateTime @default(now()) @map("date_added")
+  lastUpdated    DateTime @updatedAt @map("last_updated")
+
+  coveragePostcodes CoveragePostcode[]
+  websiteClicks     WebsiteClick[]
+
+  @@map("companies")
+}
+
+model CoveragePostcode {
+  id           Int    @id @default(autoincrement())
+  companyId    Int    @map("company_id")
+  postcodeArea String @map("postcode_area")
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([postcodeArea])
+  @@map("coverage_postcodes")
+}
+
+enum ClickType {
+  contact_reveal
+  website
+  phone
+  email
+}
+
+model WebsiteClick {
+  id            Int       @id @default(autoincrement())
+  companyId     Int       @map("company_id")
+  clickType     ClickType @default(website) @map("click_type")
+  clickedAt     DateTime  @default(now()) @map("clicked_at")
+  userIp        String?   @map("user_ip")
+  userPostcode  String?   @map("user_postcode")
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("website_clicks")
+}

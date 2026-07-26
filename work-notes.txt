@@ -1,0 +1,2 @@
+Rebuilt app from old react app to NextJS app
+data migrated from old AWS RDS database into 
