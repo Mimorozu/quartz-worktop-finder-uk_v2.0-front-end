@@ -1,6 +1,3 @@
-// Prisma schema for the stone-mason directory, mirroring the original
-// MySQL schema (stonemasons.sql: companies, coverage_postcodes, website_clicks).
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -11,23 +8,25 @@ datasource db {
 }
 
 model Company {
-  id             Int      @id @default(autoincrement())
-  companyName    String   @map("company_name")
-  contactName    String?  @map("contact_name")
-  phone          String
-  email          String?
-  website        String?
-  addressLine1   String?  @map("address_line1")
-  addressLine2   String?  @map("address_line2")
-  city           String?
-  county         String?
-  postcode       String?
-  description    String?
-  featured       Boolean  @default(false)
-  active         Boolean  @default(true)
-  dateAdded      DateTime @default(now()) @map("date_added")
-  lastUpdated    DateTime @updatedAt @map("last_updated")
-
+  id                Int                @id(map: "idx_16400_primary") @default(autoincrement())
+  companyName       String             @map("company_name") @db.VarChar(255)
+  contactName       String?            @map("contact_name") @db.VarChar(255)
+  phone             String             @db.VarChar(20)
+  email             String?            @db.VarChar(255)
+  website           String?            @db.VarChar(255)
+  addressLine1      String?            @map("address_line1") @db.VarChar(255)
+  addressLine2      String?            @map("address_line2") @db.VarChar(255)
+  city              String?            @db.VarChar(100)
+  county            String?            @db.VarChar(100)
+  postcode          String?            @db.VarChar(10)
+  coverage_area     String?
+  description       String?
+  services_offered  String?
+  logo_url          String?            @db.VarChar(255)
+  featured          Boolean?           @default(false)
+  active            Boolean?           @default(true)
+  dateAdded         DateTime           @default(now()) @map("date_added") @db.Timestamptz(6)
+  lastUpdated       DateTime?          @updatedAt @map("last_updated") @db.Timestamptz(6)
   coveragePostcodes CoveragePostcode[]
   websiteClicks     WebsiteClick[]
 
@@ -35,14 +34,28 @@ model Company {
 }
 
 model CoveragePostcode {
-  id           Int    @id @default(autoincrement())
-  companyId    Int    @map("company_id")
-  postcodeArea String @map("postcode_area")
+  id           Int     @id(map: "idx_16414_primary") @default(autoincrement())
+  companyId    Int     @map("company_id")
+  postcodeArea String  @map("postcode_area") @db.VarChar(10)
+  company      Company @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "coverage_postcodes_ibfk_1")
 
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@index([postcodeArea])
+  @@index([companyId], map: "idx_16414_company_id")
+  @@index([postcodeArea], map: "idx_16414_postcode_area")
   @@map("coverage_postcodes")
+}
+
+model WebsiteClick {
+  id           Int                          @id(map: "idx_16422_primary") @default(autoincrement())
+  companyId    Int                          @map("company_id")
+  clickType    ClickType?                   @default(website) @map("click_type")
+  clickedAt    DateTime                     @default(now()) @map("clicked_at") @db.Timestamptz(6)
+  userIp       String?                      @map("user_ip") @db.VarChar(45)
+  userPostcode String?                      @map("user_postcode") @db.VarChar(10)
+  company      Company                      @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "website_clicks_ibfk_1")
+
+  @@index([clickedAt], map: "idx_16422_clicked_at")
+  @@index([companyId], map: "idx_16422_company_id")
+  @@map("website_clicks")
 }
 
 enum ClickType {
@@ -50,17 +63,6 @@ enum ClickType {
   website
   phone
   email
-}
 
-model WebsiteClick {
-  id            Int       @id @default(autoincrement())
-  companyId     Int       @map("company_id")
-  clickType     ClickType @default(website) @map("click_type")
-  clickedAt     DateTime  @default(now()) @map("clicked_at")
-  userIp        String?   @map("user_ip")
-  userPostcode  String?   @map("user_postcode")
-
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@map("website_clicks")
+  @@map("website_clicks_click_type_t")
 }

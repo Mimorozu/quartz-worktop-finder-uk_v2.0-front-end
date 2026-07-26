@@ -1,6 +1,5 @@
 "use server";
 
-import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { createSession, deleteSession } from "@/lib/session";
 
@@ -14,15 +13,13 @@ export async function login(
   const password = String(formData.get("password") ?? "");
 
   const validUsername = process.env.ADMIN_USERNAME;
-  const validPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+  const validPassword = process.env.ADMIN_PASSWORD;
 
-  if (!validUsername || !validPasswordHash) {
+  if (!validUsername || !validPassword) {
     return { error: "Admin credentials are not configured." };
   }
 
-  const passwordMatches = await bcrypt.compare(password, validPasswordHash);
-
-  if (username !== validUsername || !passwordMatches) {
+  if (username !== validUsername || password !== validPassword) {
     return { error: "Invalid username or password" };
   }
 

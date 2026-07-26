@@ -22,6 +22,11 @@ export function Footer() {
         <p className="mt-5 text-sm opacity-80">
           &copy; {new Date().getFullYear()} Kitchen Worktop Experts. All rights reserved.
         </p>
+        <p className="mt-4">
+          <Link href="/admin/login" className="text-sm opacity-60 hover:underline">
+            Login
+          </Link>
+        </p>
       </div>
     </footer>
   );
