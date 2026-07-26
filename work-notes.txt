@@ -1,2 +1,2 @@
-Rebuilt app from old react app to NextJS app
-data migrated from old AWS RDS database into 
+Rebuilt app from old react app to NextJS app.
+data migrated from old AWS RDS snapshot into PostgreSQL hosted on railway. 

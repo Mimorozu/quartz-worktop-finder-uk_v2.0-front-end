@@ -71,7 +71,7 @@ export default async function HomePage({
       <header className="relative overflow-hidden bg-gradient-to-br from-slate to-slate-dark text-white text-center px-5 pt-20 pb-24">
         <div className="relative">
           <div className="text-2xl font-bold mb-3 tracking-tight">
-            Quartz Worktop <span className="text-gold">Experts</span>
+            Quartz Worktop <span className="text-gold">Finder UK</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-bold mb-3 tracking-tight">
             Find Verified Stone Masons
