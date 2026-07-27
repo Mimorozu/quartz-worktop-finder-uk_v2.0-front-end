@@ -29,6 +29,13 @@ export function CompanyCard({
   const [contact, setContact] = useState<ContactInfo | null>(null);
 
   const location = [city, county].filter(Boolean).join(", ");
+  const initials = companyName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
 
   async function handleReveal() {
     setStatus("loading");
@@ -51,18 +58,27 @@ export function CompanyCard({
   }
 
   return (
-    <div className="group relative bg-white p-6 sm:p-8 mb-6 rounded-xl border border-border shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:border-gold overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold to-gold-dark opacity-0 transition-opacity group-hover:opacity-100" />
-
-      <h3 className="flex flex-wrap items-center gap-2.5 text-2xl font-semibold text-slate mb-5">
-        {companyName}
-        <span className="bg-verified text-white text-xs px-2.5 py-1 rounded-full font-semibold uppercase tracking-wide">
-          Verified
-        </span>
-      </h3>
+    <div className="group relative mb-6 overflow-hidden rounded-2xl border border-border/70 bg-surface p-6 transition-all hover:-translate-y-1 hover:border-gold/50 hover:shadow-[0_20px_40px_-15px_rgba(29,26,22,0.25)] sm:p-8">
+      <div className="flex flex-wrap items-start gap-4">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gold/10 font-display text-lg font-semibold text-gold">
+          {initials}
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="flex flex-wrap items-center gap-2.5 font-display text-2xl font-semibold text-slate">
+            {companyName}
+            <span className="inline-flex items-center gap-1 rounded-md bg-verified/10 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-verified">
+              <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+              Verified
+            </span>
+          </h3>
+          {location && <p className="mt-1 text-sm text-muted">{location}</p>}
+        </div>
+      </div>
 
       {description && (
-        <div className="mt-6 pt-6 border-t border-border text-body-text leading-relaxed whitespace-pre-line">
+        <div className="mt-6 border-t border-border pt-6 leading-relaxed whitespace-pre-line text-body-text">
           {description}
         </div>
       )}
@@ -71,7 +87,7 @@ export function CompanyCard({
         type="button"
         onClick={handleReveal}
         disabled={status === "loading" || status === "revealed"}
-        className="mt-5 w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-semibold text-white transition-all bg-gold hover:bg-gold-dark hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gold/30 disabled:cursor-not-allowed disabled:translate-y-0 disabled:hover:shadow-none data-[revealed=true]:bg-verified data-[revealed=true]:hover:bg-verified"
+        className="mt-5 w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-white transition-all bg-gold hover:bg-gold-dark hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gold/30 active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:translate-y-0 disabled:hover:shadow-none disabled:active:scale-100 data-[revealed=true]:bg-verified data-[revealed=true]:hover:bg-verified"
         data-revealed={status === "revealed"}
       >
         {status === "loading" && (
@@ -149,11 +165,6 @@ export function CompanyCard({
               </a>
             </InfoItem>
           )}
-          {location && (
-            <InfoItem label="Location">
-              <span>{location}</span>
-            </InfoItem>
-          )}
         </div>
       )}
     </div>
@@ -162,9 +173,9 @@ export function CompanyCard({
 
 function InfoItem({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 p-3 bg-page-bg rounded-lg">
+    <div className="flex items-start gap-3 rounded-lg bg-page-bg p-3">
       <div className="flex-1">
-        <div className="font-semibold text-muted text-xs uppercase tracking-wide mb-1">
+        <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">
           {label}
         </div>
         <div className="text-slate">{children}</div>

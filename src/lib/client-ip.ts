@@ -1,5 +1,5 @@
-export function getClientIp(request: Request): string | null {
-  const forwardedFor = request.headers.get("x-forwarded-for");
+export function getClientIp(headers: { get(name: string): string | null }): string | null {
+  const forwardedFor = headers.get("x-forwarded-for");
   if (forwardedFor) return forwardedFor.split(",")[0].trim();
-  return request.headers.get("x-real-ip");
+  return headers.get("x-real-ip");
 }

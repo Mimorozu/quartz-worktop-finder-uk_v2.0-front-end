@@ -2,31 +2,33 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="bg-slate text-white px-5 py-10 mt-16">
-      <div className="max-w-[1100px] mx-auto text-center">
-        <div className="text-xl font-bold mb-2">
-          Kitchen Worktop <span className="text-gold">Experts</span>
+    <footer className="mt-16 border-t border-white/10 bg-slate-dark px-5 py-12 text-white">
+      <div className="mx-auto flex max-w-[1100px] flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+        <div className="text-center sm:text-left">
+          <div className="font-display text-xl font-semibold">
+            Kitchen Worktop <span className="text-gold">Experts</span>
+          </div>
+          <p className="mt-2 max-w-xs text-sm text-white/60">
+            Connecting you with verified stone mason specialists across the UK.
+          </p>
+          <p className="mt-6 text-xs text-white/40">
+            &copy; {new Date().getFullYear()} Kitchen Worktop Experts. All rights reserved.
+          </p>
         </div>
-        <p className="opacity-80">
-          Connecting you with verified stone mason specialists across the UK
-        </p>
-        <p className="mt-4">
-          <Link href="/privacy" className="text-gold hover:underline mx-2.5">
-            Privacy Policy
-          </Link>
-          |
-          <Link href="/terms" className="text-gold hover:underline mx-2.5">
-            Terms of Service
-          </Link>
-        </p>
-        <p className="mt-5 text-sm opacity-80">
-          &copy; {new Date().getFullYear()} Kitchen Worktop Experts. All rights reserved.
-        </p>
-        <p className="mt-4">
-          <Link href="/admin/login" className="text-sm opacity-60 hover:underline">
+
+        <div className="flex flex-col items-center gap-3 text-sm sm:items-end">
+          <div className="flex gap-6">
+            <Link href="/privacy" className="text-white/70 transition-colors hover:text-gold">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="text-white/70 transition-colors hover:text-gold">
+              Terms of Service
+            </Link>
+          </div>
+          <Link href="/admin/login" className="text-xs text-white/30 hover:text-white/50">
             Login
           </Link>
-        </p>
+        </div>
       </div>
     </footer>
   );

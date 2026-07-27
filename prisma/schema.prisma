@@ -66,3 +66,27 @@ enum ClickType {
 
   @@map("website_clicks_click_type_t")
 }
+
+model SearchUnlock {
+  id              Int          @id @default(autoincrement())
+  postcode        String       @db.VarChar(10)
+  postcodeArea    String       @map("postcode_area") @db.VarChar(10)
+  amount          Int
+  currency        String       @default("gbp") @db.VarChar(3)
+  status          UnlockStatus @default(pending)
+  stripeSessionId String       @unique @map("stripe_session_id") @db.VarChar(255)
+  userIp          String?      @map("user_ip") @db.VarChar(45)
+  paidAt          DateTime?    @map("paid_at") @db.Timestamptz(6)
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([postcodeArea], map: "idx_search_unlocks_postcode_area")
+  @@map("search_unlocks")
+}
+
+enum UnlockStatus {
+  pending
+  paid
+  expired
+
+  @@map("search_unlocks_status_t")
+}

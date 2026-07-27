@@ -2,29 +2,87 @@
 
 @theme inline {
   --font-sans: var(--font-inter);
+  --font-display: var(--font-fraunces);
 
-  /* Kitchen Worktop Experts brand palette, carried over from the original site */
-  --color-slate: #2d3748;
-  --color-slate-dark: #1a202c;
-  --color-gold: #d69e2e;
-  --color-gold-dark: #b7791f;
-  --color-verified: #48bb78;
-  --color-muted: #718096;
-  --color-muted-light: #a0aec0;
-  --color-body-text: #4a5568;
-  --color-border: #e2e8f0;
-  --color-border-dark: #4a5568;
-  --color-page-bg: #f7fafc;
-  --color-danger-bg: #742a2a;
-  --color-danger-text: #feb2b2;
-  --color-danger-border: #9b2c2c;
-  --color-success-bg: #22543d;
-  --color-success-text: #9ae6b4;
-  --color-success-border: #276749;
-  --color-notice-bg: #fff8e1;
+  /* Kitchen Worktop Experts brand palette — Warm Quarry */
+  --color-slate: #232019;
+  --color-slate-dark: #1c1a16;
+  --color-gold: #b8631f;
+  --color-gold-dark: #8f4b17;
+  --color-verified: #4f6b4f;
+  --color-muted: #7d7263;
+  --color-muted-light: #b3a68f;
+  --color-body-text: #4a4234;
+  --color-border: #e4dccc;
+  --color-border-dark: #4f473b;
+  --color-page-bg: #f6f1e6;
+  --color-surface: #fdfbf8;
+  --color-danger-bg: #3a2420;
+  --color-danger-text: #f0b8ab;
+  --color-danger-border: #7a3b2e;
+  --color-success-bg: #22341f;
+  --color-success-text: #a8d1a0;
+  --color-success-border: #3f5c3a;
+  --color-notice-bg: #faf1de;
 }
 
 body {
   font-family: var(--font-sans), -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
+  position: relative;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes teaser-reveal {
+  0% {
+    opacity: 0;
+    filter: blur(6px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(1px);
+  }
+}
+
+/* Subtle grain to break up flat colour fields */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

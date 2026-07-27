@@ -12,18 +12,18 @@ export function LegalLayout({
 }) {
   return (
     <>
-      <header className="bg-gradient-to-br from-slate to-slate-dark text-white text-center px-5 py-10">
-        <div className="text-xl font-bold mb-2.5">
+      <header className="bg-slate-dark px-5 py-10 text-center text-white">
+        <div className="font-display text-xl font-semibold mb-2.5">
           Kitchen Worktop <span className="text-gold">Experts</span>
         </div>
-        <Link href="/" className="text-white/90 hover:opacity-100 hover:underline">
+        <Link href="/" className="text-white/80 transition-colors hover:text-gold">
           ← Back to Directory
         </Link>
       </header>
 
       <main className="max-w-[900px] mx-auto my-10 px-5">
-        <div className="bg-white p-8 sm:p-12 rounded-xl shadow-sm prose-legal">
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate mb-2">{title}</h1>
+        <div className="bg-surface p-8 sm:p-12 rounded-2xl border border-border/60 shadow-sm prose-legal">
+          <h1 className="font-display text-3xl sm:text-4xl font-semibold text-slate mb-2">{title}</h1>
           <p className="text-muted mb-8">
             <strong className="text-slate">Last Updated:</strong> {lastUpdated}
           </p>

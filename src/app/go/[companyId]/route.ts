@@ -31,7 +31,7 @@ export async function GET(
     data: {
       companyId: id,
       clickType: "website",
-      userIp: getClientIp(request),
+      userIp: getClientIp(request.headers),
       userPostcode: postcode || null,
     },
   });

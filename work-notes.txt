@@ -1,2 +1,10 @@
 Rebuilt app from old react app to NextJS app.
 data migrated from old AWS RDS snapshot into PostgreSQL hosted on railway. 
+Stripe set up for payment processing. 
+
+
+Stripe
+reliability gap using DB the source of truth
+
+Domain
+Spaceship

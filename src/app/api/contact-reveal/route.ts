@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     data: {
       companyId,
       clickType: "contact_reveal",
-      userIp: getClientIp(request),
+      userIp: getClientIp(request.headers),
       userPostcode: postcode || null,
     },
   });
