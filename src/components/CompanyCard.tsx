@@ -16,8 +16,8 @@ export function CompanyCard({
   city,
   county,
   postcode,
-  citySlug,
   freePreview = false,
+  initialContact,
 }: {
   id: number;
   companyName: string;
@@ -25,13 +25,18 @@ export function CompanyCard({
   city: string | null;
   county: string | null;
   postcode: string;
-  citySlug?: string;
   freePreview?: boolean;
+  // Pre-fetched contact details for a company already known to be free to
+  // reveal (e.g. the one free company shown on a city landing page),
+  // rendered server-side rather than re-authorized through the paid-reveal
+  // API. See src/lib/unlock.ts for why that API only ever authorizes against
+  // an exact postcode, not a city grouping.
+  initialContact?: ContactInfo | null;
 }) {
   const [status, setStatus] = useState<"idle" | "loading" | "revealed" | "error">(
     "idle"
   );
-  const [contact, setContact] = useState<ContactInfo | null>(null);
+  const [contact, setContact] = useState<ContactInfo | null>(initialContact ?? null);
 
   const location = [city, county].filter(Boolean).join(", ");
   const initials = companyName
@@ -43,12 +48,19 @@ export function CompanyCard({
     .toUpperCase();
 
   async function handleReveal() {
+    if (initialContact) {
+      setContact(initialContact);
+      setStatus("revealed");
+      trackEvent("contact_reveal", { company_id: id });
+      return;
+    }
+
     setStatus("loading");
     try {
       const res = await fetch("/api/contact-reveal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companyId: id, postcode, citySlug }),
+        body: JSON.stringify({ companyId: id, postcode }),
       });
       const data = await res.json();
       if (data.success) {
@@ -167,7 +179,11 @@ export function CompanyCard({
           {contact.website && (
             <InfoItem label="Website">
               <a
-                href={`/go/${id}?postcode=${encodeURIComponent(postcode)}${citySlug ? `&citySlug=${encodeURIComponent(citySlug)}` : ""}`}
+                href={
+                  initialContact
+                    ? contact.website
+                    : `/go/${id}?postcode=${encodeURIComponent(postcode)}`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent("website_click", { company_id: id })}

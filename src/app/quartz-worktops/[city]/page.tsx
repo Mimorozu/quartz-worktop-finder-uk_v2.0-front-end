@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CITIES, getCityBySlug } from "@/lib/cities";
 import { searchCompaniesByAreaCodes } from "@/lib/search";
+import { prisma } from "@/lib/prisma";
 import { CompanyCard } from "@/components/CompanyCard";
 import { CompanyTeaser } from "@/components/CompanyTeaser";
 import { Footer } from "@/components/Footer";
@@ -44,6 +45,19 @@ export default async function CityPage({
   const results = await searchCompaniesByAreaCodes(city.areaCodes);
   const [firstResult, ...rest] = results;
 
+  // The free-preview company on a city page is a fixed, server-computed
+  // fact (first alphabetically among companies covering this city), so its
+  // contact details are fetched directly here rather than re-authorized
+  // through the paid-reveal API — that API only ever authorizes against an
+  // exact postcode district, not this broader city grouping. See
+  // src/lib/unlock.ts for the full reasoning.
+  const freeContact = firstResult
+    ? await prisma.company.findUnique({
+        where: { id: firstResult.id, active: true },
+        select: { phone: true, email: true, website: true },
+      })
+    : null;
+
   return (
     <>
       <NavBar />
@@ -83,8 +97,8 @@ export default async function CityPage({
             city={firstResult.city}
             county={firstResult.county}
             postcode={city.name}
-            citySlug={city.slug}
             freePreview={rest.length > 0}
+            initialContact={freeContact}
           />
         )}
 

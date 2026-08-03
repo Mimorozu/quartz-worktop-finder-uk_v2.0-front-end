@@ -18,13 +18,12 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const companyId = Number(body?.companyId);
   const postcode = typeof body?.postcode === "string" ? body.postcode : "";
-  const citySlug = typeof body?.citySlug === "string" ? body.citySlug : null;
 
   if (!companyId || Number.isNaN(companyId)) {
     return NextResponse.json({ success: false }, { status: 400 });
   }
 
-  const authorized = await isCompanyRevealAuthorized({ companyId, postcode, citySlug, clientIp });
+  const authorized = await isCompanyRevealAuthorized({ companyId, postcode, clientIp });
   if (!authorized) {
     return NextResponse.json({ success: false, error: "Not unlocked." }, { status: 403 });
   }

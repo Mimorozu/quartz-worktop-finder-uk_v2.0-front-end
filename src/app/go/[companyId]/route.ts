@@ -22,13 +22,11 @@ export async function GET(
   }
 
   const postcode = request.nextUrl.searchParams.get("postcode") ?? "";
-  const citySlug = request.nextUrl.searchParams.get("citySlug");
   const clientIp = getClientIp(request.headers);
 
   const authorized = await isCompanyRevealAuthorized({
     companyId: id,
     postcode,
-    citySlug,
     clientIp,
   });
   if (!authorized) {

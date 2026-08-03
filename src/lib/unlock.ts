@@ -3,11 +3,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { extractPostcodeArea } from "@/lib/postcode";
-import { getCityBySlug } from "@/lib/cities";
-import {
-  getFreePreviewCompanyIdForAreaCodes,
-  getFreePreviewCompanyIdForPostcodeArea,
-} from "@/lib/search";
+import { getFreePreviewCompanyIdForPostcodeArea } from "@/lib/search";
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -78,26 +74,27 @@ export async function isPostcodeAreaUnlocked(postcodeArea: string, clientIp: str
 // contact details / website (contact-reveal, /go). A company is revealable
 // if either (a) the caller has genuinely paid to unlock that postcode area,
 // or (b) it's the one company each search legitimately shows for free — the
-// first alphabetical result for the given postcode area or city. Never trust
-// the client's own claim of which company is "the free one".
+// first alphabetical result for the given postcode area. Never trust the
+// client's own claim of which company is "the free one".
+//
+// This used to also accept a client-supplied citySlug as an alternate way to
+// qualify as "the free one", checked against the broader city letter-code
+// grouping (e.g. all of London) rather than the exact postcode district. That
+// was a real paywall bypass: a company that requires payment for a specific
+// postcode can still be the alphabetically-first company across an entire
+// city's broader grouping, and citySlug/companyId are both plain client
+// input with nothing tying them to the postcode actually searched. City pages
+// now render their one free company's contact info server-side instead of
+// going through this API, so the citySlug path is gone entirely.
 export async function isCompanyRevealAuthorized({
   companyId,
   postcode,
-  citySlug,
   clientIp,
 }: {
   companyId: number;
   postcode: string;
-  citySlug: string | null;
   clientIp: string | null;
 }): Promise<boolean> {
-  if (citySlug) {
-    const city = getCityBySlug(citySlug);
-    if (!city) return false;
-    const freeId = await getFreePreviewCompanyIdForAreaCodes(city.areaCodes);
-    return freeId === companyId;
-  }
-
   const postcodeArea = extractPostcodeArea(postcode);
   if (!postcodeArea) return false;
 
