@@ -22,8 +22,8 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Find Quartz Worktop Specialists Near You | Kitchen Worktop Experts",
-    template: "%s | Kitchen Worktop Experts",
+    default: "Find Quartz Worktop Specialists Near You | Quartz Worktop Finder",
+    template: "%s | Quartz Worktop Finder",
   },
   description:
     "Find verified quartz worktop specialists and stone masons across the UK. Free directory connecting you directly with local fabricators for granite, marble and quartz worktops. No middlemen.",
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
     "UK stone masons",
   ],
   robots: "index, follow",
-  authors: [{ name: "Kitchen Worktop Experts" }],
+  authors: [{ name: "Quartz Worktop Finder" }],
   openGraph: {
-    title: "Find Quartz Worktop Specialists Near You | Kitchen Worktop Experts",
+    title: "Find Quartz Worktop Specialists Near You | Quartz Worktop Finder",
     description:
       "Free directory of verified quartz worktop specialists across the UK. Connect directly with kitchen worktop fabricators for granite, marble and quartz.",
     type: "website",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Find Quartz Worktop Specialists Near You | Kitchen Worktop Experts",
+    title: "Find Quartz Worktop Specialists Near You | Quartz Worktop Finder",
     description: "Free directory of verified quartz worktop specialists across the UK.",
     images: ["/kitchen.webp"],
   },

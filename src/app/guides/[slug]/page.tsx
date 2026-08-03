@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GUIDES, getGuideBySlug } from "@/lib/guides";
@@ -21,8 +22,54 @@ export async function generateMetadata({
   return {
     title: guide.title,
     description: guide.excerpt,
+    alternates: { canonical: `/guides/${guide.slug}` },
+    openGraph: { title: guide.title, description: guide.excerpt, type: "article" },
     robots: guide.draft ? { index: false, follow: false } : undefined,
   };
+}
+
+// Guide content is plain data, not markdown/HTML, but supports one small
+// piece of syntax so writers can link out inline: [label](/path).
+const INLINE_LINK_PATTERN = /\[([^\]]+)\]\(([^)]+)\)/g;
+
+function renderInlineText(text: string): ReactNode {
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  INLINE_LINK_PATTERN.lastIndex = 0;
+  while ((match = INLINE_LINK_PATTERN.exec(text))) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    const [, label, href] = match;
+    const isExternal = /^https?:\/\//.test(href);
+    parts.push(
+      isExternal ? (
+        <a
+          key={key++}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gold underline-offset-2 hover:underline"
+        >
+          {label}
+        </a>
+      ) : (
+        <Link key={key++} href={href} className="text-gold underline-offset-2 hover:underline">
+          {label}
+        </Link>
+      )
+    );
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
 }
 
 export default async function GuidePage({
@@ -94,21 +141,67 @@ export default async function GuidePage({
               );
             }
 
+            if (block.type === "subheading") {
+              return (
+                <h3
+                  key={index}
+                  className="pt-2 font-display text-lg font-semibold text-slate"
+                >
+                  {block.text}
+                </h3>
+              );
+            }
+
             if (block.type === "list") {
               return (
                 <ul key={index} className="list-disc space-y-2 pl-6 text-body-text">
                   {block.items.map((item, itemIndex) => (
                     <li key={itemIndex} className="leading-7">
-                      {item}
+                      {renderInlineText(item)}
                     </li>
                   ))}
                 </ul>
               );
             }
 
+            if (block.type === "table") {
+              return (
+                <div key={index} className="overflow-x-auto rounded-xl border border-border">
+                  <table className="w-full min-w-[480px] border-collapse text-sm">
+                    <thead>
+                      <tr>
+                        {block.headers.map((header) => (
+                          <th
+                            key={header}
+                            className="border-b border-border bg-page-bg px-4 py-3 text-left font-semibold text-slate"
+                          >
+                            {header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {block.rows.map((row, rowIndex) => (
+                        <tr key={rowIndex} className="odd:bg-surface even:bg-page-bg/40">
+                          {row.map((cell, cellIndex) => (
+                            <td
+                              key={cellIndex}
+                              className="border-b border-border px-4 py-3 text-body-text"
+                            >
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            }
+
             return (
               <p key={index} className="leading-8 text-body-text">
-                {block.text}
+                {renderInlineText(block.text)}
               </p>
             );
           })}
@@ -123,7 +216,7 @@ export default async function GuidePage({
               {guide.faq.map((item) => (
                 <div key={item.question}>
                   <h3 className="mb-1.5 font-semibold text-slate">{item.question}</h3>
-                  <p className="leading-7 text-body-text">{item.answer}</p>
+                  <p className="leading-7 text-body-text">{renderInlineText(item.answer)}</p>
                 </div>
               ))}
             </div>

@@ -6,33 +6,33 @@ import { formatOrdinalDate } from "@/lib/format-date";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "Terms of Service for Kitchen Worktop Experts stone mason directory. Read our terms before using our free directory service.",
+    "Terms of Service for Quartz Worktop Finder stone mason directory. Read our terms before using our free directory service.",
 };
 
 export default function TermsPage() {
   return (
     <LegalLayout title="Terms of Service" lastUpdated={formatOrdinalDate(new Date())}>
       <P>
-        Welcome to Kitchen Worktop Experts. By accessing and using our stone mason directory
+        Welcome to Quartz Worktop Finder. By accessing and using our stone mason directory
         service, you agree to be bound by these Terms of Service. Please read them carefully.
       </P>
 
       <H2>1. Acceptance of Terms</H2>
       <P>
-        By accessing or using Kitchen Worktop Experts (&quot;the Service&quot;), you agree to
+        By accessing or using Quartz Worktop Finder (&quot;the Service&quot;), you agree to
         comply with and be bound by these Terms of Service. If you do not agree to these
         terms, please do not use the Service.
       </P>
 
       <H2>2. Description of Service</H2>
       <P>
-        Kitchen Worktop Experts is a free online directory that connects homeowners,
+        Quartz Worktop Finder is a free online directory that connects homeowners,
         builders, and contractors with verified stone mason specialists in the UK who
         specialize in kitchen worktop fabrication and installation.
       </P>
 
       <Notice>
-        <strong className="text-slate">Important:</strong> Kitchen Worktop Experts is a
+        <strong className="text-slate">Important:</strong> Quartz Worktop Finder is a
         directory service only. We do not employ stone masons, perform stone fabrication
         work, or engage in any construction or installation services. We simply provide
         contact information for verified stone mason businesses.
@@ -61,7 +61,7 @@ export default function TermsPage() {
       <H3>4.1 Verification Process</H3>
       <P>
         While we make reasonable efforts to verify that listed stone masons are legitimate
-        businesses operating in the UK, Kitchen Worktop Experts:
+        businesses operating in the UK, Quartz Worktop Finder:
       </P>
       <Ul>
         <li>Does not employ, control, or supervise the stone masons listed</li>
@@ -99,7 +99,7 @@ export default function TermsPage() {
       </Ul>
       <H3>5.2 Exclusion of Liability</H3>
       <P>
-        To the fullest extent permitted by law, Kitchen Worktop Experts shall not be liable
+        To the fullest extent permitted by law, Quartz Worktop Finder shall not be liable
         for:
       </P>
       <Ul>
@@ -116,7 +116,7 @@ export default function TermsPage() {
 
       <H2>6. Indemnification</H2>
       <P>
-        You agree to indemnify and hold harmless Kitchen Worktop Experts, its owners,
+        You agree to indemnify and hold harmless Quartz Worktop Finder, its owners,
         employees, and affiliates from any claims, damages, losses, liabilities, and expenses
         (including legal fees) arising from:
       </P>
@@ -129,8 +129,8 @@ export default function TermsPage() {
 
       <H2>7. Intellectual Property</H2>
       <P>
-        All content on Kitchen Worktop Experts, including text, graphics, logos, and
-        software, is the property of Kitchen Worktop Experts or its content suppliers and is
+        All content on Quartz Worktop Finder, including text, graphics, logos, and
+        software, is the property of Quartz Worktop Finder or its content suppliers and is
         protected by UK and international copyright laws.
       </P>
       <P>You may not:</P>
@@ -216,7 +216,7 @@ export default function TermsPage() {
       <H2>15. Entire Agreement</H2>
       <P>
         These Terms of Service, together with our Privacy Policy, constitute the entire
-        agreement between you and Kitchen Worktop Experts regarding the use of the Service.
+        agreement between you and Quartz Worktop Finder regarding the use of the Service.
       </P>
 
       <H2>16. Consumer Rights</H2>
@@ -229,7 +229,7 @@ export default function TermsPage() {
       <H2>17. Contact Information</H2>
       <P>If you have any questions about these Terms of Service, please contact us at:</P>
       <p className="mt-5 p-5 bg-page-bg border-l-4 border-gold rounded">
-        <strong className="text-slate">Kitchen Worktop Experts</strong>
+        <strong className="text-slate">Quartz Worktop Finder</strong>
         <br />
         Email: mimorozu@gmail.com
       </p>
@@ -237,7 +237,7 @@ export default function TermsPage() {
       <div className="mt-10">
         <Notice>
           <strong className="text-slate">
-            By using Kitchen Worktop Experts, you acknowledge that you have read, understood,
+            By using Quartz Worktop Finder, you acknowledge that you have read, understood,
             and agree to be bound by these Terms of Service.
           </strong>
         </Notice>

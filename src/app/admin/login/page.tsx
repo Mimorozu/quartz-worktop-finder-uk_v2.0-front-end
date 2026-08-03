@@ -11,7 +11,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-[440px] bg-slate p-8 sm:p-12 rounded-2xl border border-border-dark shadow-2xl shadow-black/40">
         <div className="text-center mb-10">
           <div className="text-2xl font-bold text-white mb-2">
-            Kitchen Worktop <span className="text-gold">Experts</span>
+            Quartz Worktop <span className="text-gold">Finder</span>
           </div>
           <div className="text-muted-light text-sm">Admin Panel</div>
         </div>

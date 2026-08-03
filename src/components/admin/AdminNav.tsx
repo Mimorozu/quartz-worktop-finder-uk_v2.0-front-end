@@ -17,7 +17,7 @@ export function AdminNav() {
     <header className="bg-slate border-b border-border-dark py-5">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 flex flex-wrap items-center justify-between gap-5">
         <div className="text-lg font-bold text-white">
-          Kitchen Worktop <span className="text-gold">Experts</span>
+          Quartz Worktop <span className="text-gold">Finder</span>
         </div>
         <nav className="flex flex-wrap gap-2">
           {LINKS.map((link) => {

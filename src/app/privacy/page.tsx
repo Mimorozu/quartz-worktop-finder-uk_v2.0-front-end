@@ -5,14 +5,14 @@ import { formatOrdinalDate } from "@/lib/format-date";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Privacy Policy for Kitchen Worktop Experts - How we collect, use and protect your data when using our stone mason directory service.",
+    "Privacy Policy for Quartz Worktop Finder - How we collect, use and protect your data when using our stone mason directory service.",
 };
 
 export default function PrivacyPage() {
   return (
     <LegalLayout title="Privacy Policy" lastUpdated={formatOrdinalDate(new Date())}>
       <P>
-        Kitchen Worktop Experts (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is
+        Quartz Worktop Finder (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is
         committed to protecting your privacy. This Privacy Policy explains how we collect,
         use, and safeguard your information when you use our stone mason directory service.
       </P>
@@ -171,7 +171,7 @@ export default function PrivacyPage() {
         protection rights, please contact us at:
       </P>
       <p className="mt-5 p-5 bg-page-bg border-l-4 border-gold rounded">
-        <strong className="text-slate">Kitchen Worktop Experts</strong>
+        <strong className="text-slate">Quartz Worktop Finder</strong>
         <br />
         Email: mimorozu@gmail.com
       </p>

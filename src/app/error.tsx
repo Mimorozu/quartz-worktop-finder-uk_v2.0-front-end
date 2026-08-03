@@ -18,7 +18,7 @@ export default function Error({
     <div className="flex min-h-screen flex-col items-center justify-center bg-page-bg px-5 text-center">
       <div className="mb-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-gold">
         <span className="h-px w-6 bg-gold/60" />
-        Kitchen Worktop Experts
+        Quartz Worktop Finder
       </div>
       <h1 className="mb-4 font-display text-4xl font-medium tracking-tight text-slate sm:text-5xl">
         Something went wrong

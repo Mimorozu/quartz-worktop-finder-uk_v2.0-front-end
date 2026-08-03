@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 export const metadata: Metadata = {
   title: "Get Listed",
   description:
-    "List your stone mason or quartz worktop business on Kitchen Worktop Experts and connect directly with homeowners searching in your area.",
+    "List your stone mason or quartz worktop business on Quartz Worktop Finder and connect directly with homeowners searching in your area.",
 };
 
 const BENEFITS = [
@@ -45,7 +45,7 @@ export default function GetListedPage() {
             For Stone Masons &amp; Fabricators
           </div>
           <h1 className="max-w-2xl font-display text-4xl font-medium tracking-tight mb-4 sm:text-5xl">
-            Get listed on Kitchen Worktop Experts
+            Get listed on Quartz Worktop Finder
           </h1>
           <p className="max-w-xl text-lg font-light text-white/70">
             Connect directly with homeowners searching for verified quartz, granite and marble

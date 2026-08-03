@@ -20,7 +20,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Kitchen Worktop Experts",
+    name: "Quartz Worktop Finder",
     url: SITE_URL,
     description:
       "Free directory of verified quartz worktop specialists and stone masons across the UK",
@@ -33,7 +33,7 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Kitchen Worktop Experts",
+    name: "Quartz Worktop Finder",
     description:
       "Directory service connecting customers with verified quartz worktop specialists and stone masons across the UK",
     url: SITE_URL,
@@ -272,7 +272,7 @@ async function HomeIntro() {
 
       <div className="mt-10 mb-16 rounded-2xl border border-border/60 bg-surface p-8 sm:p-12">
         <h2 className="mb-6 font-display text-3xl font-semibold text-slate">
-          Welcome to Kitchen Worktop Experts
+          Welcome to Quartz Worktop Finder
         </h2>
         <p className="mb-4 max-w-[65ch] leading-8 text-body-text">
           We connect homeowners and builders directly with verified quartz worktop specialists

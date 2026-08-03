@@ -25,13 +25,13 @@ export function Footer() {
         <div className="flex flex-col gap-8 border-t border-white/10 pt-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="text-center sm:text-left">
             <div className="font-display text-xl font-semibold">
-              Kitchen Worktop <span className="text-gold">Experts</span>
+              Quartz Worktop <span className="text-gold">Finder</span>
             </div>
             <p className="mt-2 max-w-xs text-sm text-white/60">
               Connecting you with verified stone mason specialists across the UK.
             </p>
             <p className="mt-6 text-xs text-white/40">
-              &copy; {new Date().getFullYear()} Kitchen Worktop Experts. All rights reserved.
+              &copy; {new Date().getFullYear()} Quartz Worktop Finder. All rights reserved.
             </p>
           </div>
 
