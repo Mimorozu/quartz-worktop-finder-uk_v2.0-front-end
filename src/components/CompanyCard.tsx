@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { trackEvent } from "@/lib/gtag";
+import { trackEvent, trackConversion } from "@/lib/gtag";
 
 type ContactInfo = {
   phone: string | null;
@@ -67,6 +67,7 @@ export function CompanyCard({
         setContact(data);
         setStatus("revealed");
         trackEvent("contact_reveal", { company_id: id });
+        trackConversion(process.env.NEXT_PUBLIC_GOOGLE_ADS_LABEL_LEAD, { company_id: id });
       } else {
         setStatus("error");
       }

@@ -17,6 +17,8 @@
     "@stripe/react-stripe-js": "^6.8.0",
     "@stripe/stripe-js": "^9.12.1",
     "bcryptjs": "^3.0.3",
+    "google-ads-api": "^24.1.0",
+    "google-auth-library": "^11.0.0",
     "jose": "^6.2.4",
     "next": "16.2.12",
     "pg": "^8.22.0",

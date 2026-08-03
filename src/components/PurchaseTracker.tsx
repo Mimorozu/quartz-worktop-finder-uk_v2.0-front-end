@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { trackEvent } from "@/lib/gtag";
+import { trackEvent, trackConversion } from "@/lib/gtag";
 
 // Fires a GA4 purchase event once for the redirect back from
 // /api/checkout/confirm, then strips the ga_* params from the URL so a
@@ -26,6 +26,11 @@ export function PurchaseTracker({
     fired.current = true;
 
     trackEvent("purchase", {
+      transaction_id: transactionId,
+      value: value ?? undefined,
+      currency: (currency ?? "gbp").toUpperCase(),
+    });
+    trackConversion(process.env.NEXT_PUBLIC_GOOGLE_ADS_LABEL_PURCHASE, {
       transaction_id: transactionId,
       value: value ?? undefined,
       currency: (currency ?? "gbp").toUpperCase(),

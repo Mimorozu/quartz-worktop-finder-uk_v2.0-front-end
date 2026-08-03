@@ -275,13 +275,16 @@ async function HomeIntro() {
           Welcome to Quartz Worktop Finder
         </h2>
         <p className="mb-4 max-w-[65ch] leading-8 text-body-text">
-          We connect homeowners and builders directly with verified quartz worktop specialists
-          and stone masons across the UK who cut and install premium kitchen worktops.
+          Homeowners routinely overpay for quartz worktops — not because good local fabricators don't exist, 
+          but because nobody can find them. The workshops that actually cut the stone hide behind showrooms, 
+          middlemen and markup. We believe you should be able to go straight to the source.
         </p>
         <p className="mb-4 max-w-[65ch] leading-8 text-body-text">
-          Our directory features only genuine fabricators working with natural granite,
-          marble, and engineered quartz. No middlemen, no markup — just direct access to the
-          craftsmen who&apos;ll transform your kitchen.
+          We map real fabricators to real postcodes. Type yours, and see the independent workshops that genuinely cover 
+          your area — not national lead-resellers, not showrooms, not ads dressed up as results. Direct names, direct numbers."
+        </p>
+        <p className="mb-4 max-w-[65ch] leading-8 text-body-text">
+          A postcode search of independent quartz worktop fabricators across the UK. £2.99 unlocks every contact in your area and will save you thousdands.
         </p>
 
         <div className="mt-10 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">

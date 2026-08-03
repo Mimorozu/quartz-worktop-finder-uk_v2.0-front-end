@@ -33,7 +33,12 @@ function getServerSnapshot(): Consent | null {
 
 function updateGtagConsent(status: Consent) {
   if (typeof window.gtag === "function") {
-    window.gtag("consent", "update", { analytics_storage: status });
+    window.gtag("consent", "update", {
+      analytics_storage: status,
+      ad_storage: status,
+      ad_user_data: status,
+      ad_personalization: status,
+    });
   }
 }
 

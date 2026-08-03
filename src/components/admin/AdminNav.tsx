@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/admin/companies/new", label: "Add Company" },
   { href: "/admin/companies", label: "View All" },
   { href: "/admin/analytics", label: "Analytics" },
+  { href: "/admin/google-ads", label: "Google Ads" },
 ];
 
 export function AdminNav() {
