@@ -90,3 +90,16 @@ enum UnlockStatus {
 
   @@map("search_unlocks_status_t")
 }
+
+model SearchLog {
+  id           Int      @id @default(autoincrement())
+  postcode     String   @db.VarChar(10)
+  postcodeArea String   @map("postcode_area") @db.VarChar(10)
+  resultCount  Int      @map("result_count")
+  userIp       String?  @map("user_ip") @db.VarChar(45)
+  searchedAt   DateTime @default(now()) @map("searched_at") @db.Timestamptz(6)
+
+  @@index([postcodeArea], map: "idx_search_logs_postcode_area")
+  @@index([searchedAt], map: "idx_search_logs_searched_at")
+  @@map("search_logs")
+}

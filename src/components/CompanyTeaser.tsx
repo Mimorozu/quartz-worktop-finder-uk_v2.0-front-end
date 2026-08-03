@@ -3,8 +3,21 @@
 import { useContext } from "react";
 import { RevealCompleteContext } from "@/components/RevealItem";
 
-export function CompanyTeaser() {
+export function CompanyTeaser({
+  city,
+  servicesOffered,
+}: {
+  city?: string | null;
+  servicesOffered?: string | null;
+}) {
   const complete = useContext(RevealCompleteContext);
+
+  const services = servicesOffered
+    ? servicesOffered
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
 
   return (
     <div className="relative mb-6 overflow-hidden rounded-2xl border border-border bg-surface p-6 shadow-[0_20px_40px_-15px_rgba(29,26,22,0.15)] sm:p-8">
@@ -24,8 +37,19 @@ export function CompanyTeaser() {
         </div>
         <div className="min-w-0 flex-1">
           <div className="h-6 w-48 rounded bg-slate/20" />
-          <div className="mt-3 h-4 w-full max-w-md rounded bg-slate/10" />
-          <div className="mt-2 h-4 w-3/4 max-w-sm rounded bg-slate/10" />
+          {city && <p className="mt-1.5 text-sm font-medium text-muted blur-sm">{city}</p>}
+          {services.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {services.map((service) => (
+                <span
+                  key={service}
+                  className="rounded-full bg-slate/5 px-2.5 py-1 text-xs font-medium text-muted"
+                >
+                  {service}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

@@ -2,6 +2,12 @@ import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { extractPostcodeArea } from "@/lib/postcode";
+import { getCityBySlug } from "@/lib/cities";
+import {
+  getFreePreviewCompanyIdForAreaCodes,
+  getFreePreviewCompanyIdForPostcodeArea,
+} from "@/lib/search";
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -66,4 +72,37 @@ export async function isPostcodeAreaUnlocked(postcodeArea: string, clientIp: str
     },
   });
   return Boolean(recentPayment);
+}
+
+// Server-side gate for the two endpoints that actually hand out a company's
+// contact details / website (contact-reveal, /go). A company is revealable
+// if either (a) the caller has genuinely paid to unlock that postcode area,
+// or (b) it's the one company each search legitimately shows for free — the
+// first alphabetical result for the given postcode area or city. Never trust
+// the client's own claim of which company is "the free one".
+export async function isCompanyRevealAuthorized({
+  companyId,
+  postcode,
+  citySlug,
+  clientIp,
+}: {
+  companyId: number;
+  postcode: string;
+  citySlug: string | null;
+  clientIp: string | null;
+}): Promise<boolean> {
+  if (citySlug) {
+    const city = getCityBySlug(citySlug);
+    if (!city) return false;
+    const freeId = await getFreePreviewCompanyIdForAreaCodes(city.areaCodes);
+    return freeId === companyId;
+  }
+
+  const postcodeArea = extractPostcodeArea(postcode);
+  if (!postcodeArea) return false;
+
+  if (await isPostcodeAreaUnlocked(postcodeArea, clientIp)) return true;
+
+  const freeId = await getFreePreviewCompanyIdForPostcodeArea(postcodeArea);
+  return freeId === companyId;
 }

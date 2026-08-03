@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Footer } from "@/components/Footer";
+import { NavBar } from "@/components/NavBar";
 
 export function LegalLayout({
   title,
@@ -12,14 +12,7 @@ export function LegalLayout({
 }) {
   return (
     <>
-      <header className="bg-slate-dark px-5 py-10 text-center text-white">
-        <div className="font-display text-xl font-semibold mb-2.5">
-          Kitchen Worktop <span className="text-gold">Experts</span>
-        </div>
-        <Link href="/" className="text-white/80 transition-colors hover:text-gold">
-          ← Back to Directory
-        </Link>
-      </header>
+      <NavBar />
 
       <main className="max-w-[900px] mx-auto my-10 px-5">
         <div className="bg-surface p-8 sm:p-12 rounded-2xl border border-border/60 shadow-sm prose-legal">

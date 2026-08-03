@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent } from "@/lib/gtag";
 
 type ContactInfo = {
   phone: string | null;
@@ -15,6 +16,8 @@ export function CompanyCard({
   city,
   county,
   postcode,
+  citySlug,
+  freePreview = false,
 }: {
   id: number;
   companyName: string;
@@ -22,6 +25,8 @@ export function CompanyCard({
   city: string | null;
   county: string | null;
   postcode: string;
+  citySlug?: string;
+  freePreview?: boolean;
 }) {
   const [status, setStatus] = useState<"idle" | "loading" | "revealed" | "error">(
     "idle"
@@ -43,12 +48,13 @@ export function CompanyCard({
       const res = await fetch("/api/contact-reveal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companyId: id, postcode }),
+        body: JSON.stringify({ companyId: id, postcode, citySlug }),
       });
       const data = await res.json();
       if (data.success) {
         setContact(data);
         setStatus("revealed");
+        trackEvent("contact_reveal", { company_id: id });
       } else {
         setStatus("error");
       }
@@ -72,6 +78,11 @@ export function CompanyCard({
               </svg>
               Verified
             </span>
+            {freePreview && (
+              <span className="inline-flex items-center gap-1 rounded-md bg-gold/10 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gold">
+                Free preview
+              </span>
+            )}
           </h3>
           {location && <p className="mt-1 text-sm text-muted">{location}</p>}
         </div>
@@ -156,9 +167,10 @@ export function CompanyCard({
           {contact.website && (
             <InfoItem label="Website">
               <a
-                href={`/go/${id}?postcode=${encodeURIComponent(postcode)}`}
+                href={`/go/${id}?postcode=${encodeURIComponent(postcode)}${citySlug ? `&citySlug=${encodeURIComponent(citySlug)}` : ""}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackEvent("website_click", { company_id: id })}
                 className="text-gold font-medium hover:text-gold-dark hover:underline"
               >
                 Visit Website

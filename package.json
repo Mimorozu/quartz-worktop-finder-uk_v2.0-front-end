@@ -8,7 +8,8 @@
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:cleanup": "tsx --env-file=.env scripts/cleanup-old-data.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.0",

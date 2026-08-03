@@ -30,5 +30,11 @@ export async function GET(request: Request) {
 
   await grantUnlock(postcodeArea);
 
+  redirectUrl.searchParams.set("ga_txn", session.id);
+  if (session.amount_total != null) {
+    redirectUrl.searchParams.set("ga_value", (session.amount_total / 100).toString());
+  }
+  redirectUrl.searchParams.set("ga_currency", session.currency ?? "gbp");
+
   return NextResponse.redirect(redirectUrl);
 }

@@ -5,36 +5,39 @@ import { extractPostcodeArea } from "@/lib/postcode";
 import { isPostcodeAreaUnlocked } from "@/lib/unlock";
 import { isStripeConfigured } from "@/lib/stripe";
 import { getClientIp } from "@/lib/client-ip";
+import { NavBar } from "@/components/NavBar";
 import { SearchForm } from "@/components/SearchForm";
 import { CompanyCard } from "@/components/CompanyCard";
 import { CompanyTeaser } from "@/components/CompanyTeaser";
 import { UnlockResults } from "@/components/UnlockResults";
 import { RevealItem } from "@/components/RevealItem";
 import { Footer } from "@/components/Footer";
+import { PurchaseTracker } from "@/components/PurchaseTracker";
+import { SITE_URL } from "@/lib/site";
+import { searchCompaniesByPostcodeArea } from "@/lib/search";
 
 const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Kitchen Worktop Experts",
-    url: "https://kitchenworktopexperts.co.uk",
+    url: SITE_URL,
     description:
-      "Free directory of verified stone masons and kitchen worktop specialists across the UK",
+      "Free directory of verified quartz worktop specialists and stone masons across the UK",
     potentialAction: {
       "@type": "SearchAction",
-      target: "https://kitchenworktopexperts.co.uk/?postcode={search_term_string}",
+      target: `${SITE_URL}/?postcode={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   },
   {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "Organization",
     name: "Kitchen Worktop Experts",
     description:
-      "Directory service connecting customers with verified stone mason specialists",
-    url: "https://kitchenworktopexperts.co.uk",
+      "Directory service connecting customers with verified quartz worktop specialists and stone masons across the UK",
+    url: SITE_URL,
     areaServed: { "@type": "Country", name: "United Kingdom" },
-    serviceType: "Stone Mason Directory",
   },
 ];
 
@@ -42,7 +45,7 @@ const FEATURES = [
   {
     title: "Verified specialists",
     description:
-      "Every stone mason in our directory is verified and experienced in kitchen worktop fabrication.",
+      "Every specialist in our directory is verified and experienced in kitchen worktop fabrication.",
     icon: "check",
   },
   {
@@ -52,7 +55,7 @@ const FEATURES = [
   },
   {
     title: "Local experts",
-    description: "Find experienced stone masons in your area who understand local requirements.",
+    description: "Find experienced specialists in your area who understand local requirements.",
     icon: "pin",
   },
   {
@@ -72,16 +75,40 @@ const FEATURE_ICONS: Record<string, string> = {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ postcode?: string }>;
+  searchParams: Promise<{
+    postcode?: string;
+    ga_txn?: string;
+    ga_value?: string;
+    ga_currency?: string;
+  }>;
 }) {
-  const { postcode: rawPostcode } = await searchParams;
+  const {
+    postcode: rawPostcode,
+    ga_txn: gaTxn,
+    ga_value: gaValue,
+    ga_currency: gaCurrency,
+  } = await searchParams;
   const searchPerformed = Boolean(rawPostcode);
   const postcodeEntered = (rawPostcode ?? "").toUpperCase().trim();
 
-  const results = searchPerformed ? await searchCompanies(postcodeEntered) : [];
   const postcodeArea = searchPerformed ? extractPostcodeArea(postcodeEntered) : null;
+  const results = postcodeArea ? await searchCompaniesByPostcodeArea(postcodeArea) : [];
   const clientIp = getClientIp(await headers());
   const unlocked = postcodeArea ? await isPostcodeAreaUnlocked(postcodeArea, clientIp) : false;
+
+  if (postcodeArea) {
+    await prisma.searchLog.create({
+      data: {
+        postcode: postcodeEntered,
+        postcodeArea,
+        resultCount: results.length,
+        userIp: clientIp,
+      },
+    });
+  }
+  const cleanPath = searchPerformed
+    ? `/?postcode=${encodeURIComponent(postcodeEntered)}`
+    : "/";
 
   return (
     <>
@@ -89,6 +116,14 @@ export default async function HomePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <PurchaseTracker
+        transactionId={gaTxn ?? null}
+        value={gaValue ? Number(gaValue) : null}
+        currency={gaCurrency ?? null}
+        cleanPath={cleanPath}
+      />
+
+      <NavBar />
 
       <header className="relative overflow-hidden bg-slate-dark px-5 pt-20 pb-28 text-white sm:pt-24">
         <Image
@@ -148,18 +183,36 @@ export default async function HomePage({
                   ))
                 ) : (
                   <>
-                    <RevealItem index={results.length - 1}>
-                      <UnlockResults
+                    <RevealItem key={results[0].id} index={0}>
+                      <CompanyCard
+                        id={results[0].id}
+                        companyName={results[0].companyName}
+                        description={results[0].description}
+                        city={results[0].city}
+                        county={results[0].county}
                         postcode={postcodeEntered}
-                        resultCount={results.length}
-                        paymentsReady={isStripeConfigured()}
+                        freePreview
                       />
                     </RevealItem>
-                    {results.map((company, index) => (
-                      <RevealItem key={company.id} index={index}>
-                        <CompanyTeaser />
-                      </RevealItem>
-                    ))}
+                    {results.length > 1 && (
+                      <>
+                        <RevealItem index={results.length - 1}>
+                          <UnlockResults
+                            postcode={postcodeEntered}
+                            resultCount={results.length - 1}
+                            paymentsReady={isStripeConfigured()}
+                          />
+                        </RevealItem>
+                        {results.slice(1).map((company, index) => (
+                          <RevealItem key={company.id} index={index + 1}>
+                            <CompanyTeaser
+                              city={company.city}
+                              servicesOffered={company.services_offered}
+                            />
+                          </RevealItem>
+                        ))}
+                      </>
+                    )}
                   </>
                 )
               ) : (
@@ -179,10 +232,10 @@ export default async function HomePage({
                       />
                     </svg>
                     <h3 className="mb-3 font-display text-2xl font-semibold text-slate">
-                      No stone masons found in your area
+                      No quartz worktop specialists found in your area
                     </h3>
                     <p className="text-muted">
-                      We couldn&apos;t find any verified stone masons covering{" "}
+                      We couldn&apos;t find any verified specialists covering{" "}
                       {postcodeEntered}.
                     </p>
                     <p className="text-muted">
@@ -204,26 +257,6 @@ export default async function HomePage({
   );
 }
 
-async function searchCompanies(postcodeEntered: string) {
-  const area = extractPostcodeArea(postcodeEntered);
-  if (!area) return [];
-
-  return prisma.company.findMany({
-    where: {
-      active: true,
-      coveragePostcodes: { some: { postcodeArea: area } },
-    },
-    orderBy: { companyName: "asc" },
-    select: {
-      id: true,
-      companyName: true,
-      description: true,
-      city: true,
-      county: true,
-    },
-  });
-}
-
 async function HomeIntro() {
   const companyCount = await prisma.company.count({ where: { active: true } });
 
@@ -231,9 +264,9 @@ async function HomeIntro() {
     <>
       <div className="mt-10 rounded-2xl border border-border/60 bg-surface px-8 py-10 shadow-sm sm:px-12">
         <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-3 sm:divide-y-0 sm:divide-x">
-          <Stat value={`${companyCount}+`} label="Verified stone masons" />
+          <Stat value={`${companyCount}+`} label="Verified specialists" />
           <Stat value="15+" label="Years experience" />
-          <Stat value="100%" label="Free service" />
+          <Stat value="100%" label="Free to search" />
         </div>
       </div>
 
@@ -242,11 +275,11 @@ async function HomeIntro() {
           Welcome to Kitchen Worktop Experts
         </h2>
         <p className="mb-4 max-w-[65ch] leading-8 text-body-text">
-          We connect homeowners and builders directly with verified stone mason specialists
-          across the UK who cut and install premium kitchen worktops.
+          We connect homeowners and builders directly with verified quartz worktop specialists
+          and stone masons across the UK who cut and install premium kitchen worktops.
         </p>
         <p className="mb-4 max-w-[65ch] leading-8 text-body-text">
-          Our directory features only genuine stone fabricators working with natural granite,
+          Our directory features only genuine fabricators working with natural granite,
           marble, and engineered quartz. No middlemen, no markup — just direct access to the
           craftsmen who&apos;ll transform your kitchen.
         </p>

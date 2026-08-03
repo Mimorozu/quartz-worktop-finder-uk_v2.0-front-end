@@ -91,8 +91,14 @@ export default function PrivacyPage() {
 
       <H2>4. Cookies and Tracking</H2>
       <P>
-        Our website currently does not use cookies. We only track basic usage data as
-        described above to improve our service.
+        We use Google Analytics to understand how visitors use our directory — for example,
+        which pages are viewed and how visitors found our site. Google Analytics sets cookies
+        only after you give consent via the cookie banner shown on your first visit; if you
+        decline, no analytics cookies are set.
+      </P>
+      <P>
+        You can change your choice at any time by clearing your browser&apos;s cookies for
+        this site, which will show the consent banner again on your next visit.
       </P>
 
       <H2>5. Data Retention</H2>

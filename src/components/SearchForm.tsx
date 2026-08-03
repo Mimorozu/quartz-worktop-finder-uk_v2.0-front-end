@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { RevealCountContext, RevealCompleteContext } from "@/components/RevealItem";
+import { extractPostcodeArea } from "@/lib/postcode";
+import { trackEvent } from "@/lib/gtag";
 
 const COUNT_DURATION_MS = 10000;
 const MIN_TICK_MS = 150;
@@ -27,17 +29,20 @@ export function SearchForm({
   const [progress, setProgress] = useState(0);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const wasPending = useRef(false);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const value = String(new FormData(e.currentTarget).get("postcode") ?? "").trim();
     if (!value) return;
+    trackEvent("search", { search_term: extractPostcodeArea(value) ?? value });
     wasPending.current = true;
     setOverlayVisible(true);
     setDisplayCount(1);
     setProgress(0);
     startTransition(() => {
-      router.push(`/?postcode=${encodeURIComponent(value)}`);
+      router.push(`/?postcode=${encodeURIComponent(value)}`, { scroll: false });
     });
   }
 
@@ -45,16 +50,27 @@ export function SearchForm({
     if (isPending) return;
     if (!wasPending.current) return;
     wasPending.current = false;
+    // Set imperatively (not via React state) so it's guaranteed to be in the
+    // DOM before scrollIntoView runs, regardless of render timing — collapsed
+    // (hidden) result cards mean the page is too short to scroll the heading
+    // fully into view until this reserves room for them.
+    if (resultsRef.current) resultsRef.current.style.minHeight = "100vh";
+    headingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
     const target = searchPerformed ? resultCount : 0;
     let tickTimeoutId: ReturnType<typeof setTimeout> | undefined;
     let cancelled = false;
+
+    const clearMinHeight = () => {
+      if (resultsRef.current) resultsRef.current.style.minHeight = "";
+    };
 
     const kickoffId = setTimeout(() => {
       if (target === 0) {
         setCounting(false);
         setDisplayCount(0);
         setProgress(100);
+        clearMinHeight();
         return;
       }
 
@@ -68,6 +84,7 @@ export function SearchForm({
           setDisplayCount(target);
           setProgress(100);
           setCounting(false);
+          clearMinHeight();
           return;
         }
         const delay = Math.min(remaining, MIN_TICK_MS + Math.random() * (MAX_TICK_MS - MIN_TICK_MS));
@@ -79,6 +96,7 @@ export function SearchForm({
           setProgress(Math.round(fraction * 100));
           if (fraction >= 1) {
             setCounting(false);
+            clearMinHeight();
           } else {
             tick();
           }
@@ -92,6 +110,7 @@ export function SearchForm({
       cancelled = true;
       clearTimeout(kickoffId);
       clearTimeout(tickTimeoutId);
+      clearMinHeight();
     };
   }, [isPending, resultCount, searchPerformed]);
 
@@ -135,7 +154,7 @@ export function SearchForm({
       </div>
 
       {searchPerformed && (
-        <div className="mt-16 mb-8">
+        <div className="mt-16 mb-8" ref={headingRef}>
           <h2 className="font-display text-3xl font-semibold text-slate mb-2">
             {displayCount} quartz worktop specialist{displayCount === 1 ? "" : "s"} near you
           </h2>
@@ -152,7 +171,7 @@ export function SearchForm({
         </div>
       )}
 
-      <div className="relative">
+      <div className="relative" ref={resultsRef}>
         <RevealCountContext.Provider value={revealedCount}>
           <RevealCompleteContext.Provider value={animationsComplete}>
             {children}

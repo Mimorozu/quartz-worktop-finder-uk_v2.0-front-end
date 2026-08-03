@@ -3,27 +3,45 @@ import { prisma } from "@/lib/prisma";
 export const metadata = { title: "Analytics" };
 
 export default async function AnalyticsPage() {
-  const [companies, clicksByCompanyAndType, lastClickByCompany, totalReveals, totalWebsiteClicks, recentActivity] =
-    await Promise.all([
-      prisma.company.findMany({
-        select: { id: true, companyName: true },
-      }),
-      prisma.websiteClick.groupBy({
-        by: ["companyId", "clickType"],
-        _count: { _all: true },
-      }),
-      prisma.websiteClick.groupBy({
-        by: ["companyId"],
-        _max: { clickedAt: true },
-      }),
-      prisma.websiteClick.count({ where: { clickType: "contact_reveal" } }),
-      prisma.websiteClick.count({ where: { clickType: "website" } }),
-      prisma.websiteClick.findMany({
-        orderBy: { clickedAt: "desc" },
-        take: 20,
-        include: { company: { select: { companyName: true } } },
-      }),
-    ]);
+  const [
+    companies,
+    clicksByCompanyAndType,
+    lastClickByCompany,
+    totalReveals,
+    totalWebsiteClicks,
+    recentActivity,
+    totalSearches,
+    totalPaidUnlocks,
+    paidRevenue,
+  ] = await Promise.all([
+    prisma.company.findMany({
+      select: { id: true, companyName: true },
+    }),
+    prisma.websiteClick.groupBy({
+      by: ["companyId", "clickType"],
+      _count: { _all: true },
+    }),
+    prisma.websiteClick.groupBy({
+      by: ["companyId"],
+      _max: { clickedAt: true },
+    }),
+    prisma.websiteClick.count({ where: { clickType: "contact_reveal" } }),
+    prisma.websiteClick.count({ where: { clickType: "website" } }),
+    prisma.websiteClick.findMany({
+      orderBy: { clickedAt: "desc" },
+      take: 20,
+      include: { company: { select: { companyName: true } } },
+    }),
+    prisma.searchLog.count(),
+    prisma.searchUnlock.count({ where: { status: "paid" } }),
+    prisma.searchUnlock.aggregate({
+      where: { status: "paid" },
+      _sum: { amount: true },
+    }),
+  ]);
+
+  const conversionRate = totalSearches > 0 ? (totalPaidUnlocks / totalSearches) * 100 : 0;
+  const totalRevenue = (paidRevenue._sum.amount ?? 0) / 100;
 
   const countFor = (companyId: number, clickType: "contact_reveal" | "website") =>
     clicksByCompanyAndType.find(
@@ -54,10 +72,23 @@ export default async function AnalyticsPage() {
         <p className="text-muted-light">Track which stone masons are getting the most interest</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
         <StatCard label="Total Contact Reveals" value={totalReveals} />
         <StatCard label="Total Website Clicks" value={totalWebsiteClicks} />
         <StatCard label="Companies Listed" value={companies.length} />
+      </div>
+
+      <div className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-light">
+        Search → Payment Funnel
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+        <StatCard label="Postcode Searches" value={totalSearches} />
+        <StatCard label="Paid Unlocks" value={totalPaidUnlocks} />
+        <StatCard
+          label="Total Revenue"
+          value={totalRevenue.toLocaleString("en-GB", { style: "currency", currency: "GBP" })}
+        />
+        <StatCard label="Conversion Rate" value={`${conversionRate.toFixed(1)}%`} />
       </div>
 
       <div className="bg-slate rounded-xl border border-border-dark overflow-hidden mb-8">
@@ -160,11 +191,13 @@ export default async function AnalyticsPage() {
   );
 }
 
-function StatCard({ label, value }: { label: string; value: number }) {
+function StatCard({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="bg-slate p-6 rounded-xl border border-border-dark">
       <div className="text-muted-light text-sm uppercase tracking-wide mb-2">{label}</div>
-      <div className="text-4xl font-bold text-gold">{value.toLocaleString("en-GB")}</div>
+      <div className="text-4xl font-bold text-gold">
+        {typeof value === "number" ? value.toLocaleString("en-GB") : value}
+      </div>
     </div>
   );
 }

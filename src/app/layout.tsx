@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Fraunces } from "next/font/google";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
+import { GA_MEASUREMENT_ID } from "@/lib/gtag";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,37 +20,39 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://kitchenworktopexperts.co.uk"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Find Stone Masons Near You | Kitchen Worktop Experts",
+    default: "Find Quartz Worktop Specialists Near You | Kitchen Worktop Experts",
     template: "%s | Kitchen Worktop Experts",
   },
   description:
-    "Find verified stone masons and kitchen worktop specialists across the UK. Free directory connecting you directly with local fabricators for granite, marble and quartz worktops. No middlemen.",
+    "Find verified quartz worktop specialists and stone masons across the UK. Free directory connecting you directly with local fabricators for granite, marble and quartz worktops. No middlemen.",
   keywords: [
-    "stone masons",
+    "quartz worktops",
+    "quartz worktop specialists",
     "kitchen worktops",
     "granite worktops",
-    "quartz worktops",
     "marble worktops",
+    "stone masons",
     "stone fabricators",
     "worktop installation",
     "UK stone masons",
-    "kitchen worktop specialists",
   ],
   robots: "index, follow",
   authors: [{ name: "Kitchen Worktop Experts" }],
   openGraph: {
-    title: "Find Stone Masons Near You | Kitchen Worktop Experts",
+    title: "Find Quartz Worktop Specialists Near You | Kitchen Worktop Experts",
     description:
-      "Free directory of verified stone masons across the UK. Connect directly with kitchen worktop specialists for granite, marble and quartz.",
+      "Free directory of verified quartz worktop specialists across the UK. Connect directly with kitchen worktop fabricators for granite, marble and quartz.",
     type: "website",
-    url: "https://kitchenworktopexperts.co.uk",
+    url: SITE_URL,
+    images: [{ url: "/kitchen.webp", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Find Stone Masons Near You | Kitchen Worktop Experts",
-    description: "Free directory of verified stone masons across the UK.",
+    title: "Find Quartz Worktop Specialists Near You | Kitchen Worktop Experts",
+    description: "Free directory of verified quartz worktop specialists across the UK.",
+    images: ["/kitchen.webp"],
   },
 };
 
@@ -61,7 +67,41 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${inter.variable} ${fraunces.variable}`}
     >
-      <body className="bg-page-bg text-slate antialiased">{children}</body>
+      <body className="bg-page-bg text-slate antialiased">
+        {GA_MEASUREMENT_ID && (
+          <>
+            {/* Consent Mode v2: analytics_storage defaults to denied, so no
+                analytics cookie is set until CookieConsentBanner grants it
+                (UK PECR/GDPR). */}
+            <Script id="ga-consent-default" strategy="beforeInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                window.gtag = gtag;
+                gtag('consent', 'default', {
+                  analytics_storage: 'denied',
+                  ad_storage: 'denied',
+                  ad_user_data: 'denied',
+                  ad_personalization: 'denied',
+                  wait_for_update: 500,
+                });
+              `}
+            </Script>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga-init" strategy="afterInteractive">
+              {`
+                window.gtag('js', new Date());
+                window.gtag('config', '${GA_MEASUREMENT_ID}');
+              `}
+            </Script>
+          </>
+        )}
+        {children}
+        <CookieConsentBanner />
+      </body>
     </html>
   );
 }

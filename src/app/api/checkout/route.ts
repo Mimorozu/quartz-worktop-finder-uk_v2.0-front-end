@@ -4,12 +4,21 @@ import { extractPostcodeArea } from "@/lib/postcode";
 import { getClientIp } from "@/lib/client-ip";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
 import { UNLOCK_PRICE_PENCE, UNLOCK_CURRENCY } from "@/lib/pricing";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   if (!isStripeConfigured()) {
     return NextResponse.json(
       { success: false, error: "Payments are not set up yet. Please check back soon." },
       { status: 503 }
+    );
+  }
+
+  const clientIp = getClientIp(request.headers);
+  if (clientIp && !rateLimit(`checkout:${clientIp}`, 10, 60 * 60_000)) {
+    return NextResponse.json(
+      { success: false, error: "Too many requests. Please try again later." },
+      { status: 429 }
     );
   }
 
@@ -38,14 +47,13 @@ export async function POST(request: Request) {
   const session = await stripe.checkout.sessions.create({
     ui_mode: "embedded_page",
     mode: "payment",
-    payment_method_types: ["card"],
     line_items: [
       {
         price_data: {
           currency: UNLOCK_CURRENCY,
           unit_amount: UNLOCK_PRICE_PENCE,
           product_data: {
-            name: `Unlock ${companyCount} stone mason contact${companyCount !== 1 ? "s" : ""} — ${postcodeArea}`,
+            name: `Unlock ${companyCount} quartz worktop specialist contact${companyCount !== 1 ? "s" : ""} — ${postcodeArea}`,
           },
         },
         quantity: 1,
@@ -62,7 +70,7 @@ export async function POST(request: Request) {
       amount: UNLOCK_PRICE_PENCE,
       currency: UNLOCK_CURRENCY,
       stripeSessionId: session.id,
-      userIp: getClientIp(request.headers),
+      userIp: clientIp,
     },
   });
 
