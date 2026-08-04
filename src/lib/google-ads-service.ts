@@ -68,6 +68,7 @@ export async function createCampaign({
         name: `${name} Budget`,
         delivery_method: enums.BudgetDeliveryMethod.STANDARD,
         amount_micros: toMicros(dailyBudgetGbp),
+        explicitly_shared: false,
       },
     },
     {
@@ -78,6 +79,8 @@ export async function createCampaign({
         status: enums.CampaignStatus.PAUSED,
         advertising_channel_type: enums.AdvertisingChannelType.SEARCH,
         maximize_conversions: {},
+        contains_eu_political_advertising:
+          enums.EuPoliticalAdvertisingStatus.DOES_NOT_CONTAIN_EU_POLITICAL_ADVERTISING,
         campaign_budget: budgetResourceName,
         network_settings: {
           target_google_search: true,

@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s | Quartz Worktop Finder",
   },
   description:
-    "Find verified quartz worktop specialists and stone masons across the UK. Free directory connecting you directly with local fabricators for granite, marble and quartz worktops. No middlemen.",
+    "Find verified quartz worktop specialists and stone masons across the UK. Directory connecting you directly with local fabricators for granite, marble and quartz worktops. No middlemen.",
   keywords: [
     "quartz worktops",
     "quartz worktop specialists",

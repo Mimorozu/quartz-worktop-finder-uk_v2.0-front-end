@@ -153,8 +153,7 @@ export default async function HomePage({
             Find verified quartz worktop specialists near you
           </h1>
           <p className="max-w-xl text-lg font-light text-white/70 sm:text-xl">
-            Connect directly with kitchen worktop specialists across the UK — no middlemen,
-            no markup.
+            The workshop that cuts your quartz worktop is minutes away — and cheaper than the showroom. Find it for £2.99.
           </p>
         </div>
       </header>
