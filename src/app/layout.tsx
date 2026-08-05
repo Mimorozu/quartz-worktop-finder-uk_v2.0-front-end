@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Inter, Fraunces } from "next/font/google";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { GA_MEASUREMENT_ID, GOOGLE_ADS_CONVERSION_ID } from "@/lib/gtag";
+import { CLARITY_PROJECT_ID } from "@/lib/clarity";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -99,6 +100,18 @@ export default function RootLayout({
               `}
             </Script>
           </>
+        )}
+        {CLARITY_PROJECT_ID && (
+          <Script id="clarity-init" strategy="afterInteractive">
+            {`
+              (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "${CLARITY_PROJECT_ID}");
+              window.clarity('consent', false);
+            `}
+          </Script>
         )}
         {children}
         <CookieConsentBanner />

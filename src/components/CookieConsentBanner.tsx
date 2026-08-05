@@ -2,6 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 import { isAnalyticsConfigured } from "@/lib/gtag";
+import { updateClarityConsent } from "@/lib/clarity";
 
 const STORAGE_KEY = "kwe_cookie_consent";
 
@@ -46,7 +47,10 @@ export function CookieConsentBanner() {
   const consent = useSyncExternalStore(subscribe, readConsent, getServerSnapshot);
 
   useEffect(() => {
-    if (consent === "granted") updateGtagConsent("granted");
+    if (consent === "granted") {
+      updateGtagConsent("granted");
+      updateClarityConsent(true);
+    }
   }, [consent]);
 
   if (!isAnalyticsConfigured() || consent !== null) return null;
@@ -67,6 +71,7 @@ export function CookieConsentBanner() {
             onClick={() => {
               writeConsent("denied");
               updateGtagConsent("denied");
+              updateClarityConsent(false);
             }}
             className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted transition-colors hover:border-slate hover:text-slate"
           >
@@ -77,6 +82,7 @@ export function CookieConsentBanner() {
             onClick={() => {
               writeConsent("granted");
               updateGtagConsent("granted");
+              updateClarityConsent(true);
             }}
             className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gold-dark"
           >
